@@ -24,9 +24,19 @@ app.use(session({
   cookie: { maxAge: 60000 }
 }))
 
-app.get("/", async (req, res) => {
-    res.render("index.html", {})
-})
+app.get("/:page?", (req, res) => {
+  const page = req.params.page || "index";
+  
+  res.render(`${page}.html`, {}, (err, html) => {
+      if (err) {
+          res.render("404.html");
+      } else {
+          res.send(html);
+      }
+  });
+});
+
+
 
 const PORT = 7001
 app.listen(PORT, () => {
