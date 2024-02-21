@@ -62,8 +62,11 @@
                         <a href="auth/login" class="nav-item nav-link ms-4">Login</a>
                         <% } else { %>
                         <div class="nav-item dropdown">
-                            <img src="<%= user.Image %>" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <%= user.Name %></a>
+                            <!-- Adiciona a imagem em miniatura ao lado do nome do usuário -->
+                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                                <img src="<%= user.Image %>" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%; ">
+                                <%= user.Name %>
+                            </a>
                             <div class="dropdown-menu bg-light mt-2">
                                 <a href="feature" class="dropdown-item">Features</a>
                                 <a href="team" class="dropdown-item">Our Team</a>
@@ -74,10 +77,6 @@
                         </div>
                         <% } %>
                     </div>
-                    <!--
-                    <butaton type="button" class="btn text-white p-0 d-none d-lg-block" data-bs-toggle="modal"
-                        data-bs-target="#searchModal"><i class="fa fa-search"></i></butaton>
-                    -->
                 </div>
             </nav>
         </div>
