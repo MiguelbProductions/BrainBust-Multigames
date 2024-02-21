@@ -8108,7 +8108,7 @@ a.text-dark:hover, a.text-dark:focus {
   visibility: visible !important; }
 
 .invisible {
-  visibility: hidden !important; }
+  display: none !important; }  
 
 @media print {
   *,

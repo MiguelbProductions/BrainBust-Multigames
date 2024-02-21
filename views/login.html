@@ -32,7 +32,7 @@
 						<div class="img" style="background-image: url(/public/img/bg/account.jpg);"></div>
 						<div class="login-wrap p-4 p-md-5"> 
 						<div id="sucess-message" class="alert alert-success <%= debug.success ? '' : 'invisible' %>">
-							<%= debug.success ? debug.success : '' %>
+							<%- debug.success ? debug.success : '' %> 
 						</div>
 						<div class="d-flex">
 							<div class="w-100">
@@ -41,16 +41,19 @@
 						</div>
 						<form id="loginForm" class="signin-form" method="post">
 						<div class="form-group">
-							<input type="text" name="username_or_email" id="username_or_email" class="form-control" required>
+							<input type="text" value="<%= fields.username_or_email ? fields.username_or_email : '' %>" name="username_or_email" id="username_or_email" class="form-control <%= debug.errors && debug.errors.username_or_email ? 'is-invalid' : '' %>" required>
 							<label class="form-control-placeholder" for="username">Email or Username</label>
+							<% if (debug.errors && debug.errors.username_or_email) { %>
+								<div class="invalid-feedback"><%= debug.errors.username_or_email %></div>
+							<% } %>
 						</div>
 						<div class="form-group accounts mt-4">
-						<input id="password-field" type="password" name="passwordvalue" id="passwordvalue" class="form-control" required>
-						<label class="form-control-placeholder" for="password">Password</label>
-						<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-						</div>
-						<div id="error-message" class="alert alert-danger <%= debug.error ? '' : 'invisible' %>">
-							<%= debug.error ? debug.error : '' %>
+							<input id="password-field" type="password" name="passwordvalue" class="form-control <%= debug.errors && debug.errors.passwordvalue ? 'is-invalid' : '' %>" required>
+							<label class="form-control-placeholder" for="password">Password</label>
+							<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+							<% if (debug.errors && debug.errors.passwordvalue) { %>
+								<div class="invalid-feedback"><%= debug.errors.passwordvalue %></div>
+							<% } %>
 						</div>
 						<div class="form-group submitbtn">
 							<button type="submit" id="LoginBtn" class="form-control btn btn-primary rounded submit px-3">Login</button>
