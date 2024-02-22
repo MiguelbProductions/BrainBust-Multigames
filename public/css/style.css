@@ -111,6 +111,10 @@ h6,
     margin-left: 8px;
 }
 
+.navbar .dropdown-item.logout {
+    color: red;
+}
+
 @media (max-width: 991.98px) {
     .navbar .navbar-nav {
         padding: 0 15px;

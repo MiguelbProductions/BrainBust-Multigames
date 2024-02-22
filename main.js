@@ -1,15 +1,15 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const path = require("path")
-const { MongoClient, ObjectId } = require("mongodb");
-const session = require('express-session');
-const bcrypt = require('bcrypt');
-const fileUpload = require('express-fileupload');
+const { MongoClient, ObjectId } = require("mongodb")
+const session = require('express-session')
+const bcrypt = require('bcrypt')
+const fileUpload = require('express-fileupload')
 
 const app = express()
 
-const dbUrl = 'mongodb://localhost:27017';
-const dbName = "BrainBurst";
+const dbUrl = 'mongodb://localhost:27017'
+const dbName = "BrainBurst"
 
 app.engine("html", require("ejs").renderFile)
 app.set("view engine", "html")
@@ -18,7 +18,7 @@ app.set("views", path.join(__dirname, "/views"))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(fileUpload());
+app.use(fileUpload())
 
 app.use(session({
   secret: 'SECRETKEY',
@@ -28,50 +28,62 @@ app.use(session({
 }))
 
 app.get("/:page?", async (req, res) => {
-  const page = req.params.page || "Home";
-  let user = null;
+  const page = req.params.page || "Home"
+  let user = null
 
   if (req.session.userId) {
     try {
-      const client = await MongoClient.connect(dbUrl);
-      const db = client.db(dbName);
-      const users = db.collection("Users");
+      const client = await MongoClient.connect(dbUrl)
+      const db = client.db(dbName)
+      const users = db.collection("Users")
 
-      const userId = new ObjectId(req.session.userId);
+      const userId = new ObjectId(req.session.userId)
 
-      user = await users.findOne({ _id: userId });
+      user = await users.findOne({ _id: userId })
       if (user) user.password = undefined
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
   
-  res.render(`${page}.html`, { currentPage: page, user: user }, (err, html) => {
-      if (err)res.render("404.html", { currentPage: page, user: user });
+  res.render(`main/${page}.html`, { currentPage: page, user: user }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: page, user: user })
       else res.send(html)
   })
+})
+
+app.get("/tools/:page?", async (req, res) => {
+  const page = req.params.page || "Home"
+  res.render(`programming/tools/${page}.html`, { currentPage: page }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: page })
+      else res.send(html)
+  })
+})
+
+app.get('/auth/logout', (req, res) => {
+  req.session.destroy(err => { res.redirect('/') })
 });
 
 app.get("/auth/:page?", (req, res) => {
-  const page = req.params.page || "Home";
-  const successMessage = req.query.success || '';
-  
-  res.render(`${page}.html`, { debug: { success: successMessage }, fields: {} }, (err, html) => {
-      if (err) res.redirect("/404");
+  const page = req.params.page
+  const successMessage = req.query.success || ''
+  console.log(page)
+  res.render(`auth/${page}.html`, { debug: { success: successMessage }, fields: {} }, (err, html) => {
+      if (err) res.redirect("/404")
       else res.send(html)
-  });
-});
+  })
+})
 
 app.post('/auth/login', async (req, res) => {
-  const { username_or_email, passwordvalue } = req.body;
-  let errors = {};
+  const { username_or_email, passwordvalue } = req.body
+  let errors = {}
 
   try {
-    const client = await MongoClient.connect(dbUrl);
-    const db = client.db(dbName);
-    const users = db.collection("Users");
+    const client = await MongoClient.connect(dbUrl)
+    const db = client.db(dbName)
+    const users = db.collection("Users")
 
-    const user = await users.findOne({ $or: [{ Username: username_or_email }, { Email: username_or_email }] });
+    const user = await users.findOne({ $or: [{ Username: username_or_email }, { Email: username_or_email }] })
 
     if (!user) errors.username_or_email = "User not found"
     else {
@@ -80,41 +92,54 @@ app.post('/auth/login', async (req, res) => {
     }
 
     if (Object.keys(errors).length > 0) {
-      res.render('login', { 
+      res.render('auth/login', { 
         debug: { errors: errors},
         fields: {
           username_or_email: req.body.username_or_email
         }
       })
     } else {
-      req.session.userId = user._id;
-      res.redirect('/');
+      req.session.userId = user._id
+      res.redirect('/')
     }
   } catch (err) {
-    res.render('login', { debug: { error: 'Error accessing users'} });
+    res.render('auth/login', { debug: { error: 'Error accessing users'} })
   }
 }).post('/auth/register', async (req, res) => {
-  const { email, name, username, password_field, confirm_password } = req.body;
-  let errors = {};
+  const { email, name, username, password_field, confirm_password } = req.body
+  let errors = {}
 
   if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
-    errors.email = 'Please enter a valid email address.';
+    errors.email = 'Please enter a valid email address.'
   }
 
   if (username.length < 3) {
-    errors.username = 'Username must be at least 3 characters long.';
+    errors.username = 'Username must be at least 3 characters long.'
   }
 
   if (name.length < 3) {
-    errors.name = 'Name must be at least 3 characters long.';
+    errors.name = 'Name must be at least 3 characters long.'
   }
 
-  if (password_field !== confirm_password) {
-    errors.password = 'Passwords do not match.';
-  }
+  if (password_field != confirm_password) {
+    errors.password = 'Passwords do not match.'
+  } else {
+    if (password_field.length < 8) {
+      errors.password = "Password must be at least 8 characters long.";
+    } else if (!/[a-z]/.test(password_field)) {
+      errors.password = "Password must contain at least one lowercase letter.";
+    } else if (!/[A-Z]/.test(password_field)) {
+      errors.password = "Password must contain at least one uppercase letter.";
+    } else if (!/\d/.test(password_field)) {
+      errors.password = "Password must contain at least one digit.";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password_field)) {
+      errors.password = "Password must contain at least one special character.";
+    }
+  }  
 
   if (Object.keys(errors).length > 0) {
-    res.render('register', { 
+    console.log(errors, password_field, !password_field.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/))
+    res.render('auth/register', { 
       debug: { errors: errors },
       fields: {
         email: req.body.email,
@@ -122,20 +147,21 @@ app.post('/auth/login', async (req, res) => {
         username: req.body.username,
       }
     })
+    return;
   }
 
   try {
-    const client = await MongoClient.connect(dbUrl, { useUnifiedTopology: true });
-    const db = client.db(dbName);
-    const users = db.collection("Users");
+    const client = await MongoClient.connect(dbUrl)
+    const db = client.db(dbName)
+    const users = db.collection("Users")
 
-    const existingUser = await users.findOne({ $or: [{ Email: email }, { Username: username }] });
+    const existingUser = await users.findOne({ $or: [{ Email: email }, { Username: username }] })
 
     if (existingUser) {
       errors.email = 'Email or username already exists. Please choose another.'
       errors.username = 'Email or username already exists. Please choose another.'
       
-      res.render('register', { 
+      res.render('auth/register', { 
         debug: { errors: errors },
         fields: {
           email: req.body.email,
@@ -143,33 +169,24 @@ app.post('/auth/login', async (req, res) => {
           username: req.body.username,
         }
       })
+      return;
+    } else {
+      const hashedPassword = await bcrypt.hash(password_field, 10)
+
+      await users.insertOne({
+        Email: email,
+        Name: name,
+        Username: username,
+        Password: hashedPassword,
+        Image: '/public/img/icons/DefaultProfileIcon.png'
+      })
+  
+      res.redirect('/auth/login?success=User+registered+successfully');
     }
-
-    const hashedPassword = await bcrypt.hash(password_field, 10);
-
-    await users.insertOne({
-      Email: email,
-      Name: name,
-      Username: username,
-      Password: hashedPassword,
-      Image: '/public/img/icons/DefaultProfileIcon.png'
-    });
-    req.session.success = "User registered successfully";
-    res.redirect('/auth/login?success=User registered successfully');
   } catch (err) {
-    res.render('register', { debug: { error: 'Error accessing the database'} });
+    res.render('auth/register', { debug: { error: 'Error accessing the database'} })
   }
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy(err => {
-      if (err) {
-          res.send('Error');
-      } else {
-          res.redirect('..');
-      }
-  });
-});
+})
 
 const PORT = 7001
 app.listen(PORT, () => {
