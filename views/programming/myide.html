@@ -1,4 +1,15 @@
 <%- include('../partials/header.html') %>
+
+<!-- Code Mirror Style Start -->
+<link rel="stylesheet" href="/public/externalpackages/codemirror-5.65.16/lib/codemirror.css">
+
+<link rel="stylesheet" href="/public/externalpackages/codemirror-5.65.16/theme/dracula.css">
+<link rel="stylesheet" href="/public/externalpackages/codemirror-5.65.16/theme/mdn-like.css">
+<link rel="stylesheet" href="/public/externalpackages/codemirror-5.65.16/theme/neat.css">
+
+<link rel="stylesheet" href="/public/css/myide.css">
+<!-- Code Mirror Style Stop -->
+
 <!-- Hero Start -->
 <div class="container-fluid pt-5 bg-primary hero-header">
     <div class="container pt-5"></div>
@@ -6,29 +17,42 @@
 <!-- Hero End -->
 
 <!-- Main Content Start -->
-<div class="container-fluid mt-3 px-0" style="height: calc(100vh - 150px);">
+<div class="container-fluid mt-3 px-0 main-container">
     <div class="row h-100 gx-0">
         <div class="col-md-4 d-flex flex-column px-2">
             <!-- Desafio -->
-            <div class="flex-fill" style="border: 1px solid #eee; display: flex; flex-direction: column; box-sizing: border-box;">
-                <h4 style="background-color: #f0f0f0; padding: 8px; margin-bottom: 0;">Desafio</h4>
-                <div style="background-color: #e0e0e0; padding: 8px; flex-grow: 1; box-sizing: border-box;">Texto do desafio...</div>
+            <div class="flex-fill content-section">
+                <h4 class="section-header">Desafio</h4>
+                <div class="section-body ide">Texto do desafio...</div>
             </div>
         </div>
         <div class="col-md-8 d-flex flex-column px-2">
             <!-- IDE/Console -->
-            <div style="flex: 2; border: 1px solid #eee; display: flex; flex-direction: column; margin-bottom: 8px; box-sizing: border-box;">
-                <h4 style="background-color: #f0f0f0; padding: 8px; margin-bottom: 0;">IDE/Console</h4>
-                <div style="background-color: #e0e0e0; padding: 8px; flex-grow: 1; box-sizing: border-box;">Interface para código...</div>
+            <div class="ide-console content-section">
+                <h4 class="section-header">IDE/Console</h4>
+                <div class="section-body">
+                    <textarea id="container-ide"></textarea>
+                </div>
             </div>
             <!-- Output -->
-            <div style="flex: 1; border: 1px solid #eee; display: flex; flex-direction: column; box-sizing: border-box;">
-                <h4 style="background-color: #f0f0f0; padding: 8px; margin-bottom: 0;">Output</h4>
-                <div style="background-color: #e0e0e0; padding: 8px; flex-grow: 1; box-sizing: border-box;">Resultado do código...</div>
+            <div class="output content-section">
+                <h4 class="section-header">Output</h4>
+                <div class="section-body">Resultado do código...</div>
             </div>
         </div>
     </div>
 </div>
 <!-- Main Content End -->
+
+<!-- Code Mirror Script Start -->
+<script src="/public/externalpackages/codemirror-5.65.16/lib/codemirror.js"></script>
+<script src="/public/externalpackages/codemirror-5.65.16/addon/edit/closebrackets.js"></script>
+
+<script src="/public/externalpackages/codemirror-5.65.16/mode/javascript/javascript.js"></script>
+<script src="/public/externalpackages/codemirror-5.65.16/mode/python/python.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/public/js/editor.js"></script>
+<!-- Code Mirror Script End -->
 
 <%- include('../partials/footer.html') %>

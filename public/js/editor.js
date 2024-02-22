@@ -1,11 +1,12 @@
 $(document).ready(function () {
-    var editor = CodeMirror.fromTextArea(document.getElementById("IDEContainer"), {
-        theme: "dracula",
+    var editor = CodeMirror.fromTextArea(document.getElementById("container-ide"), {
+        theme: "neat",
         lineNumbers: true,
         autoCloseBrackets: true,
         mode: "python",
     });
 
+    /*
     $("#MidContent").on("click", function(event) {
         var ScriptContent = editor.getValue(); 
 
@@ -35,6 +36,6 @@ $(document).ready(function () {
                 console.error('Error:', error);
             }
         });
-       
     });
+    */
 });

@@ -1,0 +1,38 @@
+.main-container {
+    height: calc(100vh - 150px);
+}
+
+.content-section {
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.section-header {
+    background-color: #f8f9fa;
+    padding: 8px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.section-body {
+    background-color: #ffffff;
+    padding: 8px;
+    flex-grow: 1;
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
+
+.section-body:has(#container-ide) {
+    padding: 0;
+}
+
+.ide-console {
+    flex: 2;
+    margin-bottom: 8px;
+}
+
+.output {
+    flex: 1;
+}
