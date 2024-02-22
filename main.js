@@ -5,6 +5,7 @@ const { MongoClient, ObjectId } = require("mongodb")
 const session = require('express-session')
 const bcrypt = require('bcrypt')
 const fileUpload = require('express-fileupload')
+const { Console } = require("console")
 
 const app = express()
 
@@ -29,7 +30,7 @@ app.use(session({
 
 app.get("/:page?", async (req, res) => {
   const page = req.params.page || "Home"
-  let user = null
+  let user
 
   if (req.session.userId) {
     try {
@@ -41,21 +42,40 @@ app.get("/:page?", async (req, res) => {
 
       user = await users.findOne({ _id: userId })
       if (user) user.password = undefined
+
     } catch (err) {
-      console.error(err)
+      console.log(err)
     }
   }
-  
+
   res.render(`main/${page}.html`, { currentPage: page, user: user }, (err, html) => {
       if (err)res.render("main/404.html", { currentPage: page, user: user })
       else res.send(html)
   })
 })
 
-app.get("/tools/:page?", async (req, res) => {
+app.get("/programming/:page?", async (req, res) => {
   const page = req.params.page || "Home"
-  res.render(`programming/tools/${page}.html`, { currentPage: page }, (err, html) => {
-      if (err)res.render("main/404.html", { currentPage: page })
+  let user
+
+  if (req.session.userId) {
+    try {
+      const client = await MongoClient.connect(dbUrl)
+      const db = client.db(dbName)
+      const users = db.collection("Users")
+
+      const userId = new ObjectId(req.session.userId)
+
+      user = await users.findOne({ _id: userId })
+      if (user) user.password = undefined
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  res.render(`programming/${page}.html`, { currentPage: page, user: user }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: page, user: user  })
       else res.send(html)
   })
 })
