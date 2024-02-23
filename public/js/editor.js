@@ -6,6 +6,34 @@ $(document).ready(function () {
         mode: "python",
     });
 
+    var isDragging = false;
+    var container = $('.main-container');
+    var initialX;
+    var desafioSection = container.find('.col-md-4');
+    var minWidth = 300; 
+
+    $('.resize-handle').on('mousedown', function(e) {
+        isDragging = true;
+        initialX = e.clientX;
+        var initialDesafioWidth = desafioSection.width();
+        
+        $(document).on('mousemove', function(e) {
+            if (isDragging) {
+                var deltaX = e.clientX - initialX;
+                var newWidth = initialDesafioWidth + deltaX;
+                if (newWidth >= minWidth && (container.width() - newWidth) >= minWidth) {
+                    desafioSection.width(newWidth);
+                }
+            }
+        });
+
+        $(document).on('mouseup', function() {
+            isDragging = false;
+            $(document).off('mousemove');
+            $(document).off('mouseup');
+        });
+    });
+
     /*
     $("#MidContent").on("click", function(event) {
         var ScriptContent = editor.getValue(); 
