@@ -1,5 +1,25 @@
+* {
+    user-select: none;
+}
+
 .main-container {
     height: calc(100vh - 150px);
+}
+
+.main-container > .row {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100%; 
+}
+
+.main-container > .row > .col-md-4 {
+    flex: 0 0 auto;
+    width: 300px; 
+}
+
+.main-container > .row > .col-md-8 {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .content-section {
@@ -19,20 +39,39 @@
 .section-body {
     background-color: #ffffff;
     padding: 8px;
-    flex-grow: 1;
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .section-body:has(#container-ide) {
     padding: 0;
+    overflow: hidden; 
+}
+
+.resize-handle {
+    cursor: ew-resize;
+    background-color: #ccc;
+    width: 5px;
+    height: 100%;
 }
 
 .ide-console {
-    flex: 2;
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow-y: auto; 
     margin-bottom: 8px;
 }
 
 .output {
-    flex: 1;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.ide-console, .output {
+    overflow: auto;
+}
+
+.CodeMirror{
+    font-size: 0.8em !important;
+    line-height: 1.1em !important;
 }
