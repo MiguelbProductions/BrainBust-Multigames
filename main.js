@@ -5,7 +5,6 @@ const { MongoClient, ObjectId } = require("mongodb")
 const session = require('express-session')
 const bcrypt = require('bcrypt')
 const fileUpload = require('express-fileupload')
-const { Console } = require("console")
 
 const app = express()
 
@@ -48,8 +47,8 @@ app.get("/:page?", async (req, res) => {
     }
   }
 
-  res.render(`main/${page}.html`, { currentPage: page, user: user }, (err, html) => {
-      if (err)res.render("main/404.html", { currentPage: page, user: user })
+  res.render(`main/${page}.html`, { currentPage: page, pagesession: null, user: user }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: page, pagesession: null, user: user })
       else res.send(html)
   })
 })
@@ -74,8 +73,8 @@ app.get("/programming/:page?", async (req, res) => {
     }
   }
 
-  res.render(`programming/${page}.html`, { currentPage: page, user: user }, (err, html) => {
-      if (err)res.render("main/404.html", { currentPage: page, user: user  })
+  res.render(`programming/${page}.html`, { currentPage: page, pagesession: "Programming", user: user }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: page, pagesession: "Programming" , user: user  })
       else res.send(html)
   })
 })
@@ -87,9 +86,18 @@ app.get('/auth/logout', (req, res) => {
 app.get("/auth/:page?", (req, res) => {
   const page = req.params.page
   const successMessage = req.query.success || ''
-  console.log(page)
+
   res.render(`auth/${page}.html`, { debug: { success: successMessage }, fields: {} }, (err, html) => {
-      if (err) res.redirect("/404")
+      if (err) res.render("main/404.html", { currentPage: page, pagesession: null, user: null })
+      else res.send(html)
+  })
+})
+
+app.get("/admin/:page?", (req, res) => {
+  const page = req.params.page
+  
+  res.render(`admin/${page}.html`, { currentPage: page, pagesession: null, user: null }, (err, html) => {
+      if (err) res.render("main/404.html", { currentPage: page, pagesession: null, user: null })
       else res.send(html)
   })
 })

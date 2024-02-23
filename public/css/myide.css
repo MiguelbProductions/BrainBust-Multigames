@@ -27,7 +27,7 @@
 
 .section-header {
     font-size: 0.9em;
-    background-color: #f8f9fa;
+    background-color: #e9eaeb;
     padding: 8px;
     margin-bottom: 0;
     border-bottom: 1px solid #ccc;
@@ -48,7 +48,7 @@
 
 .resize-handle {
     cursor: ew-resize;
-    width: 5px;
+    width: 3px;
     height: 100%;
 }
 
@@ -69,7 +69,9 @@
 }
 
 .ide-console, .output {
+    flex-grow: 1;
     overflow: auto;
+    min-height: 100px;
 }
 
 .CodeMirror{
