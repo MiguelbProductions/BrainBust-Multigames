@@ -1,4 +1,6 @@
-<% if (currentPage != "myide" && currentPage != "admaccess") { %>
+<% let BlockPages = ["codemaster", "Myide", "admaccess"]; %>
+
+<% if (BlockPages.includes(currentPage)) { %>
 <!-- Newsletter Start -->
 <div class="container-fluid bg-primary newsletter py-5">
     <div class="container">

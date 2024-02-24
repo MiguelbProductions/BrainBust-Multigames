@@ -69,12 +69,50 @@
 }
 
 .ide-console, .output {
-    flex-grow: 1;
     overflow: auto;
     min-height: 100px;
+}
+
+.ide-console {
+    min-height: 65%;
 }
 
 .CodeMirror{
     font-size: 0.8em !important;
     line-height: 1.1em !important;
+}
+
+.output-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.output-actions {
+    display: flex;
+}
+
+.output-actions .action-link {
+    padding: 0 0.7em;
+}
+
+.output-actions .action-link:not(:last-child) {
+    border-right: 1px solid #b6b5b5;
+}
+
+.output-actions .action-link.selected {
+    font-weight: bold;
+}
+
+.output-actions .action-link:hover {
+    color: #313131;
+}
+
+.output .section-body:has(.Onsetup:not(.d-none)) {
+    display: flex;
+
+    height: 100%;
+
+    align-items: center;
+    justify-content: center;
 }

@@ -1,0 +1,49 @@
+.problem-container {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.problem-detail {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.difficulty {
+    margin-left: auto;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.25em;
+}
+
+.difficulty-easy small {
+    color: green !important;
+}
+
+.difficulty-medium small {
+    color: orange !important;
+}
+
+.difficulty-hard small {
+    color: red !important;
+}
+
+.difficulty-extremely-hard small {
+    color: darkred !important;
+}
+
+.tag-list {
+    display: inline-block;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #b4d6fb;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    color: #333;
+}

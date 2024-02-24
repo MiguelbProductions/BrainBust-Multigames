@@ -1,10 +1,11 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const path = require("path")
-const { MongoClient, ObjectId } = require("mongodb")
 const session = require('express-session')
 const bcrypt = require('bcrypt')
 const fileUpload = require('express-fileupload')
+const { MongoClient, ObjectId, Int32 } = require("mongodb")
+const compiler = require('compilex')
 
 const app = express()
 
@@ -26,6 +27,9 @@ app.use(session({
   saveUninitialized: true,
   cookie: { maxAge: 60000 }
 }))
+
+var options = {stats : true}
+compiler.init(options)
 
 app.get("/:page?", async (req, res) => {
   const page = req.params.page || "Home"
@@ -53,10 +57,8 @@ app.get("/:page?", async (req, res) => {
   })
 })
 
-app.get("/programming/:page?", async (req, res) => {
-  const page = req.params.page || "Home"
+app.get("/programming/codemaster/problems", async (req, res) => {
   let user
-
   if (req.session.userId) {
     try {
       const client = await MongoClient.connect(dbUrl)
@@ -67,21 +69,75 @@ app.get("/programming/:page?", async (req, res) => {
 
       user = await users.findOne({ _id: userId })
       if (user) user.password = undefined
-
     } catch (err) {
       console.log(err)
     }
   }
 
-  res.render(`programming/${page}.html`, { currentPage: page, pagesession: "Programming", user: user }, (err, html) => {
-      if (err)res.render("main/404.html", { currentPage: page, pagesession: "Programming" , user: user  })
+  let problems
+  try {
+    const client = await MongoClient.connect(dbUrl)
+    const db = client.db(dbName)
+    const problemsCollection = db.collection("CodeMaster_Problems")
+
+    problems = await problemsCollection.find({}).toArray()
+  } catch (err) {
+    console.log(err)
+    problems = []
+  }
+
+  res.render(`programming/games/codemaster.html`, { currentPage: "problems", pagesession: "Programming", user: user, problems: problems }, (err, html) => {
+    console.log(err)
+      if (err) res.render("main/404.html", { currentPage: "problems", pagesession: "Programming" , user: user  })
       else res.send(html)
   })
 })
 
+app.get("/programming/codemaster/problem/:problem_id?", async (req, res) => {
+  const problem_id = req.params.problem_id
+
+  if (!problem_id) {
+    res.redirect("/programming/codemaster/problems")
+    return
+  }
+
+  let user, problemDetails
+  if (req.session.userId) {
+    try {
+      const client = await MongoClient.connect(dbUrl)
+      const db = client.db(dbName)
+      const users = db.collection("Users")
+
+      const userId = new ObjectId(req.session.userId)
+      user = await users.findOne({ _id: userId })
+      if (user) user.password = undefined
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  try {
+    const client = await MongoClient.connect(dbUrl)
+    const db = client.db(dbName)
+    const codeMaster_problems = db.collection("CodeMaster_Problems")
+ 
+    problemDetails = await codeMaster_problems.findOne({ ProblemNum: new Int32(problem_id)})
+    problemCount = await codeMaster_problems.countDocuments({ ProblemNum: new Int32(problem_id) })
+
+  } catch (err) {
+    console.log(err)
+  }
+
+  res.render("programming/myide.html", { currentPage: "myide", pagesession: "Programming", user: user, problem: problemDetails }, (err, html) => {
+     if (err) res.render("main/404.html", { currentPage: "myide", pagesession: "Programming" , user: user })
+    else res.send(html)
+  })
+})
+
+
 app.get('/auth/logout', (req, res) => {
   req.session.destroy(err => { res.redirect('/') })
-});
+})
 
 app.get("/auth/:page?", (req, res) => {
   const page = req.params.page
@@ -153,15 +209,15 @@ app.post('/auth/login', async (req, res) => {
     errors.password = 'Passwords do not match.'
   } else {
     if (password_field.length < 8) {
-      errors.password = "Password must be at least 8 characters long.";
+      errors.password = "Password must be at least 8 characters long."
     } else if (!/[a-z]/.test(password_field)) {
-      errors.password = "Password must contain at least one lowercase letter.";
+      errors.password = "Password must contain at least one lowercase letter."
     } else if (!/[A-Z]/.test(password_field)) {
-      errors.password = "Password must contain at least one uppercase letter.";
+      errors.password = "Password must contain at least one uppercase letter."
     } else if (!/\d/.test(password_field)) {
-      errors.password = "Password must contain at least one digit.";
+      errors.password = "Password must contain at least one digit."
     } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password_field)) {
-      errors.password = "Password must contain at least one special character.";
+      errors.password = "Password must contain at least one special character."
     }
   }  
 
@@ -175,7 +231,7 @@ app.post('/auth/login', async (req, res) => {
         username: req.body.username,
       }
     })
-    return;
+    return
   }
 
   try {
@@ -197,7 +253,7 @@ app.post('/auth/login', async (req, res) => {
           username: req.body.username,
         }
       })
-      return;
+      return
     } else {
       const hashedPassword = await bcrypt.hash(password_field, 10)
 
@@ -209,10 +265,32 @@ app.post('/auth/login', async (req, res) => {
         Image: '/public/img/icons/DefaultProfileIcon.png'
       })
   
-      res.redirect('/auth/login?success=User+registered+successfully');
+      res.redirect('/auth/login?success=User+registered+successfully')
     }
   } catch (err) {
     res.render('auth/register', { debug: { error: 'Error accessing the database'} })
+  }
+})
+
+app.post("/programming/codemaster/problem/:problem_id?", async (req, res) => {
+  try {
+    const { language, code } = req.body
+
+    if (!code) {
+        return res.status(400).send('No code provided')
+    }
+
+    var result
+    if (language != "c") var envData = { OS : "windows" }
+    else var envData = { OS : "windows" , cmd : "g++" }
+
+    if (language == "python") { compiler.compilePython( envData, code, function(data) { res.send(data.output) }) } 
+    else if (language == "java") { compiler.compileJava( envData, code, function(data) { res.send(data.output) }) } 
+    else if (language == "c#") { compiler.compileCS( envData, code,  function(data) { res.send(data.output) }) } 
+    else if (language == "c") { compiler.compileCPP(envData, code, function (data) { res.send(data.output) }) } 
+    else if (language == "visualstudio") { compiler.compileVB( envData, code, function(data) { res.send(data.output) }) }    
+  } catch (error) {
+      res.status(500).send('Error compiling script')
   }
 })
 

@@ -10,8 +10,7 @@ function createWindow () {
     height: 720,
     autoHideMenuBar: true,
     useContentSize: true,
-    resizable: false,
-    frame: false,
+    resizable: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
