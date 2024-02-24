@@ -286,7 +286,7 @@ app.post("/programming/codemaster/problem/:problem_id?", async (req, res) => {
 
     if (language == "python") { compiler.compilePython( envData, code, function(data) { res.send(data.output) }) } 
     else if (language == "java") { compiler.compileJava( envData, code, function(data) { res.send(data.output) }) } 
-    else if (language == "c#") { compiler.compileCS( envData, code,  function(data) { res.send(data.output) }) } 
+    else if (language == "csharp") { compiler.compileCS( envData, code,  function(data) { res.send(data.output) }) } 
     else if (language == "c") { compiler.compileCPP(envData, code, function (data) { res.send(data.output) }) } 
     else if (language == "visualstudio") { compiler.compileVB( envData, code, function(data) { res.send(data.output) }) }    
   } catch (error) {

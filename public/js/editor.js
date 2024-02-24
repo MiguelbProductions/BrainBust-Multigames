@@ -46,4 +46,22 @@ $(document).ready(function () {
 
     $('.expected-result').removeClass('d-none');
     $('.actual-result').addClass('d-none');
+
+    $(".run-btn").click(function() {
+        var Script = editor.getValue()
+        if (Script == "" || Script == null) return
+
+        $.ajax({
+            url: window.location.pathname, 
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ code: editor.getValue(), language: $("#language-select").val() }),
+            success: function(response) {
+                console.log(response)
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    })
 });

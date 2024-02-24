@@ -37,7 +37,25 @@
         <div class="col-md-8 d-flex flex-column px-2">
             <!-- IDE/Console -->
             <div class="ide-console content-section">
-                <h4 class="section-header"><i class="fa-solid fa-code" style="color: #0ca80c;"></i> Console</h4>
+                <div class="section-header ide-header">
+                    <div>
+                        <h4 class="section-header"><i class="fa-solid fa-code" style="color: #0ca80c;"></i> Code</h4>
+                        <div class="select-wrapper">
+                            <select id="language-select" class="language-select">
+                                <option value="python">Python</option>
+                                <option value="java">Java</option>
+                                <option value="csharp">C#</option>
+                                <option value="c">C</option>
+                                <option value="visualbasic">Visual Basic</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="run-btn">
+                            <i class="fa-solid fa-play run-icon"></i>
+                        </span>
+                    </div>
+                </div>
                 <div class="section-body">
                     <textarea id="container-ide"></textarea>
                 </div>
@@ -54,7 +72,7 @@
                 <div class="section-body">
                     <!-- Expected Result -->
                     <div class="expected-result d-none">
-                        <pre id="expected-result">Expected</pre>
+                        <pre id="expected-result">Expected Result:<br><span class="code">Hello World</span></pre>
                     </div>
                     <!-- Actual Result -->
                     <div class="actual-result d-none Onsetup">
@@ -66,21 +84,6 @@
     </div>
 </div>
 <!-- Main Content End -->
-
-<script>
-    $.ajax({
-            url: window.location.pathname, 
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ code: "print('AHHHHHH')", language: "python" }),
-            success: function(response) {
-                console.log(response)
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-            }
-        });
-</script>
 
 <!-- Code Mirror Script Start -->
 <script src="/public/externalpackages/codemirror-5.65.16/lib/codemirror.js"></script>
