@@ -274,25 +274,51 @@ app.post('/auth/login', async (req, res) => {
 
 app.post("/programming/codemaster/problem/:problem_id?", async (req, res) => {
   try {
-    const { language, code } = req.body
+      const { language, code } = req.body;
+      const problem_id = req.params.problem_id;
 
-    if (!code) {
-        return res.status(400).send('No code provided')
-    }
+      const client = await MongoClient.connect(dbUrl);
+      const db = client.db(dbName);
+      const codeMaster_problems = db.collection("CodeMaster_Problems");
+      const problemDetails = await codeMaster_problems.findOne({ ProblemNum: parseInt(problem_id) });
+      
+      if (!problemDetails) {
+          return res.status(404).send('Problem not found');
+      }
 
-    var result
-    if (language != "c") var envData = { OS : "windows" }
-    else var envData = { OS : "windows" , cmd : "g++" }
+      const expectedOutput = problemDetails.ExpectedPrompt;
 
-    if (language == "python") { compiler.compilePython( envData, code, function(data) { res.send(data.output) }) } 
-    else if (language == "java") { compiler.compileJava( envData, code, function(data) { res.send(data.output) }) } 
-    else if (language == "csharp") { compiler.compileCS( envData, code,  function(data) { res.send(data.output) }) } 
-    else if (language == "c") { compiler.compileCPP(envData, code, function (data) { res.send(data.output) }) } 
-    else if (language == "visualstudio") { compiler.compileVB( envData, code, function(data) { res.send(data.output) }) }    
+      var envData = { OS: "windows" };
+      if (language === "c") {
+          envData.cmd = "g++";
+      }
+
+      const interpretOutput = (data) => {
+        const normalizedOutput = data.output.replace(/\r\n|\r/g, "\n").trim();
+        const normalizedExpectedOutput = expectedOutput.replace(/\r\n|\r/g, "\n").trim();
+        const status = (normalizedOutput == normalizedExpectedOutput) ? "Accepted" : "Declined";
+ 
+        return { output: data.output, status: status };
+      };
+
+      if (language === "python") {
+          compiler.compilePython(envData, code, function(data) { res.send(interpretOutput(data)) });
+      } else if (language === "java") {
+          compiler.compileJava(envData, code, function(data) { res.send(interpretOutput(data)) });
+      } else if (language === "csharp") {
+          compiler.compileCS(envData, code, function(data) { res.send(interpretOutput(data)) });
+      } else if (language === "c") {
+          compiler.compileCPP(envData, code, function(data) { res.send(interpretOutput(data)) });
+      } else if (language === "visualbasic") {
+          compiler.compileVB(envData, code, function(data) { res.send(interpretOutput(data)) });
+      } else {
+          res.status(400).send('Unsupported programming language');
+      }
   } catch (error) {
-      res.status(500).send('Error compiling script')
+      console.error(error);
+      res.status(500).send('Error processing your request');
   }
-})
+});
 
 const PORT = 7001
 app.listen(PORT, () => {

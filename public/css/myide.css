@@ -116,7 +116,7 @@
 }
 
 .output-actions .action-link:hover {
-    color: #313131;
+    color: #3b3b3b;
 }
 
 .output .section-body {
@@ -136,6 +136,23 @@
     padding: 6px 10px;
     margin: 5px 0;
     border-radius: 5px;
+}
+
+.actual-result .CorrectBox {
+    color: #0f5132 !important;
+    background-color: #d1e7dd !important;
+}
+
+.actual-result .WrongBox {
+    color: #842029 !important;
+    background-color: #f8d7da !important;
+}
+
+.debug-title {
+    display: inline-block;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
 }
 
 .select-wrapper {

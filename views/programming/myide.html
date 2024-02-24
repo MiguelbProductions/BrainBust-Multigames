@@ -72,7 +72,7 @@
                 <div class="section-body">
                     <!-- Expected Result -->
                     <div class="expected-result d-none">
-                        <pre id="expected-result">Expected Result:<br><span class="code">Hello World</span></pre>
+                        <pre id="expected-result">Expected Result:<br><%- (problem && problem.ExpectedPrompt != "") ? "<span class='code'>" + problem.ExpectedPrompt : "<span class='code'>Unexpected Error</span>" %></span></pre>
                     </div>
                     <!-- Actual Result -->
                     <div class="actual-result d-none Onsetup">

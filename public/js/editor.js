@@ -35,11 +35,15 @@ $(document).ready(function () {
     });
 
     $('#expected-btn').click(function() {
+        $("#expected-btn").addClass("selected")
+        $("#result-btn").removeClass("selected")
         $('.expected-result').removeClass('d-none');
         $('.actual-result').addClass('d-none');
     });
 
     $('#result-btn').click(function() {
+        $("#result-btn").addClass("selected")
+        $("#expected-btn").removeClass("selected")
         $('.actual-result').removeClass('d-none');
         $('.expected-result').addClass('d-none');
     });
@@ -48,20 +52,30 @@ $(document).ready(function () {
     $('.actual-result').addClass('d-none');
 
     $(".run-btn").click(function() {
-        var Script = editor.getValue()
-        if (Script == "" || Script == null) return
-
+        var Script = editor.getValue();
+        if (Script == "" || Script == null) return;
+    
         $.ajax({
             url: window.location.pathname, 
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ code: editor.getValue(), language: $("#language-select").val() }),
             success: function(response) {
-                console.log(response)
+                console.log(response);
+                
+                $(".actual-result").removeClass("Onsetup");
+                var statusClass = (response.status === "Accepted") ? "debug-title text-success" : "debug-title text-danger";
+                var statusText = (response.status === "Accepted") ? "Success" : "Failure";
+                $("#actual-result").html("<span class='" + statusClass + "'>" + statusText + "</span><br>" + $("#expected-result").html() + "<br>Result<br><span class='code " + ((response.status === "Accepted") ? "CorrectBox" : "WrongBox") + "'>" + response.output + "</span>");
+    
+                $("#result-btn").addClass("selected");
+                $("#expected-btn").removeClass("selected");
+                $('.actual-result').removeClass('d-none');
+                $('.expected-result').addClass('d-none');
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
             }
         });
-    })
+    });    
 });
