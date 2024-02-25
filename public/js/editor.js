@@ -60,18 +60,22 @@ $(document).ready(function () {
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ code: editor.getValue(), language: $("#language-select").val() }),
-            success: function(response) {
-                console.log(response);
-                
+            success: function(response) {               
                 $(".actual-result").removeClass("Onsetup");
-                var statusClass = (response.status === "Accepted") ? "debug-title text-success" : "debug-title text-danger";
-                var statusText = (response.status === "Accepted") ? "Success" : "Failure";
-                $("#actual-result").html("<span class='" + statusClass + "'>" + statusText + "</span><br>" + $("#expected-result").html() + "<br>Result<br><span class='code " + ((response.status === "Accepted") ? "CorrectBox" : "WrongBox") + "'>" + response.output + "</span>");
-    
+
                 $("#result-btn").addClass("selected");
                 $("#expected-btn").removeClass("selected");
                 $('.actual-result').removeClass('d-none');
                 $('.expected-result').addClass('d-none');
+
+                if (response.hasOwnProperty("error")) {
+                    $("#actual-result").html("<span class='debug-title text-danger'>Error</span><br><span class='code WrongBox'>" + response.error + "</span>");
+                } else {
+                    var statusClass = (response.status === "Accepted") ? "debug-title text-success" : "debug-title text-danger";
+                    var statusText = (response.status === "Accepted") ? "Success" : "Failure";
+
+                    $("#actual-result").html("<span class='" + statusClass + "'>" + statusText + "</span><br>" + $("#expected-result").html() + "<br><br>Result<br><span class='code " + ((response.status === "Accepted") ? "CorrectBox" : "WrongBox") + "'>" + response.output + "</span>");
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);

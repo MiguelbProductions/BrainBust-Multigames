@@ -51,7 +51,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark p-0">
                 <a href=".." class="navbar-brand">
-                    <div class="header-titles"> <!-- Adicione esta div -->
+                    <div class="header-titles">
                         <h1 class="text-white d-inline-block">Brain<span class="text-dark">.</span>Burst</h1>
                         <h2 class="text-white d-inline-block ms-3"><%= (pagesession && pagesession == "Programming") ? "DevZone" : "" %></h2>
                     </div>
@@ -63,27 +63,26 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto">
                         <% if (pagesession && pagesession == "Programming") { %>
-                            <a href="../CodeMaster" class="nav-item nav-link"><i class="fa-solid fa-code mx-2"></i>Code Master</a>
-                            <a href="../CodeCherif" class="nav-item nav-link"><i class="fa-regular fa-bug mx-2"></i>Code Sherif</a>
+                            <a href="/minigames/programming/codemaster/problems" class="nav-item nav-link"><i class="fa-solid fa-code mx-2"></i>Code Master</a>
+                            <a href="/minigames/programming/codecherif" class="nav-item nav-link"><i class="fa-regular fa-bug mx-2"></i>Code Sheriff</a>
                             <a href="#" class="nav-item nav-link">Comming Soon...</a>
                         <% } else { %>
-                        <a href=".." class="nav-item nav-link">Home</a>
-                        <a href="../testimonial" class="nav-item nav-link">Testimonial</a>
-                        <a href="../contact" class="nav-item nav-link">Contact</a>
+                        <a href="/" class="nav-item nav-link">Home</a>
+                        <a href="/testimonial" class="nav-item nav-link">Testimonial</a>
+                        <a href="/contact" class="nav-item nav-link">Contact</a>
                         <% if (!user) { %>
-                        <a href="../auth/login" class="nav-item nav-link ms-4">Login</a>
+                            <a href="/auth/login" class="nav-item nav-link ms-4">Login</a>
                         <% } else { %>
-                        <div class="nav-item dropdown">
-                            <!-- Adiciona a imagem em miniatura ao lado do nome do usuário -->
-                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                                <img src="<%= user.Image %>" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%; ">
-                                <%= user.Name %>
-                            </a>
-                            <div class="dropdown-menu bg-light mt-2">
-                                <!-- <a href="#" class="dropdown-item">Configs</a> -->
-                                <a href="../auth/logout" class="dropdown-item logout">Log Out <i class="fa-solid fa-right-from-bracket ms-2"></i></a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <img src="<%= user.Image %>" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%; ">
+                                    <%= user.Name %>
+                                </a>
+                                <div class="dropdown-menu bg-light mt-2">
+                                    <!-- <a href="#" class="dropdown-item">Configs</a> -->
+                                    <a href="../auth/logout" class="dropdown-item logout">Log Out <i class="fa-solid fa-right-from-bracket ms-2"></i></a>
+                                </div>
                             </div>
-                        </div>
                         <% } } %>
                     </div>
                 </div>

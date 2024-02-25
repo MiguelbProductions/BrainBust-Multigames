@@ -57,7 +57,59 @@ app.get("/:page?", async (req, res) => {
   })
 })
 
-app.get("/programming/codemaster/problems", async (req, res) => {
+app.get("/minigames/menu", async (req, res) => {
+  let user
+
+  if (req.session.userId) {
+    try {
+      const client = await MongoClient.connect(dbUrl)
+      const db = client.db(dbName)
+      const users = db.collection("Users")
+
+      const userId = new ObjectId(req.session.userId)
+
+      user = await users.findOne({ _id: userId })
+      if (user) user.password = undefined
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  res.render(`minigames/Menu.html`, { currentPage: "menu", pagesession: null, user: user }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: "menu", pagesession: null, user: user })
+      else res.send(html)
+  })
+})
+
+app.get("/minigames/menu/:menupage?", async (req, res) => {
+  const menupage = req.params.menupage
+  console.log(menupage)
+  let user
+  
+  if (req.session.userId) {
+    try {
+      const client = await MongoClient.connect(dbUrl)
+      const db = client.db(dbName)
+      const users = db.collection("Users")
+
+      const userId = new ObjectId(req.session.userId)
+
+      user = await users.findOne({ _id: userId })
+      if (user) user.password = undefined
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  res.render(`minigames/${menupage}/menu-${menupage}.html`, { currentPage: "menu", pagesession: null, user: user }, (err, html) => {
+      if (err)res.render("main/404.html", { currentPage: "menu", pagesession: null, user: user })
+      else res.send(html)
+  })
+})
+
+app.get("/minigames/programming/codemaster/problems", async (req, res) => {
   let user
   if (req.session.userId) {
     try {
@@ -86,14 +138,14 @@ app.get("/programming/codemaster/problems", async (req, res) => {
     problems = []
   }
 
-  res.render(`programming/games/codemaster.html`, { currentPage: "problems", pagesession: "Programming", user: user, problems: problems }, (err, html) => {
+  res.render(`minigames/programming/games/codemaster.html`, { currentPage: "Code Master", pagesession: "Programming", user: user, problems: problems }, (err, html) => {
     console.log(err)
-      if (err) res.render("main/404.html", { currentPage: "problems", pagesession: "Programming" , user: user  })
+      if (err) res.render("main/404.html", { currentPage: "Code Master", pagesession: "Programming" , user: user  })
       else res.send(html)
   })
 })
 
-app.get("/programming/codemaster/problem/:problem_id?", async (req, res) => {
+app.get("/minigames/programming/codemaster/problem/:problem_id?", async (req, res) => {
   const problem_id = req.params.problem_id
 
   if (!problem_id) {
@@ -128,8 +180,8 @@ app.get("/programming/codemaster/problem/:problem_id?", async (req, res) => {
     console.log(err)
   }
 
-  res.render("programming/myide.html", { currentPage: "myide", pagesession: "Programming", user: user, problem: problemDetails }, (err, html) => {
-     if (err) res.render("main/404.html", { currentPage: "myide", pagesession: "Programming" , user: user })
+  res.render("minigames/programming/myide.html", { currentPage: "Code Master", pagesession: "Programming", user: user, problem: problemDetails }, (err, html) => {
+     if (err) res.render("main/404.html", { currentPage: "Code Master", pagesession: "Programming" , user: user })
     else res.send(html)
   })
 })
@@ -282,35 +334,72 @@ app.post("/programming/codemaster/problem/:problem_id?", async (req, res) => {
       const codeMaster_problems = db.collection("CodeMaster_Problems");
       const problemDetails = await codeMaster_problems.findOne({ ProblemNum: parseInt(problem_id) });
       
-      if (!problemDetails) {
-          return res.status(404).send('Problem not found');
+      let variableCode = "";
+      if (problemDetails.Variables) {
+          const vars = problemDetails.Variables;
+          Object.keys(vars).forEach(key => {
+              const value = vars[key];
+              switch (language) {
+                  case "python":
+                      variableCode += `${key} = ${value}\n`;
+                      break;
+                  case "java":
+                      variableCode += `int ${key} = ${value};\n`;
+                      break;
+                  case "csharp":
+                      variableCode += `int ${key} = ${value};\n`;
+                      break;
+                  case "c":
+                      variableCode += `int ${key} = ${value};\n`;
+                      break;
+              }
+          });
       }
+      
+      const finalCode = variableCode + code;
 
-      const expectedOutput = problemDetails.ExpectedPrompt;
-
+      const expectedOutput = problemDetails.Result;
       var envData = { OS: "windows" };
       if (language === "c") {
           envData.cmd = "g++";
       }
 
       const interpretOutput = (data) => {
-        const normalizedOutput = data.output.replace(/\r\n|\r/g, "\n").trim();
-        const normalizedExpectedOutput = expectedOutput.replace(/\r\n|\r/g, "\n").trim();
-        const status = (normalizedOutput == normalizedExpectedOutput) ? "Accepted" : "Declined";
- 
-        return { output: data.output, status: status };
-      };
+        if (data.output) {
+            let finalOutput = data.output;
+            const outputNumber = parseFloat(data.output);
+    
+            if (!isNaN(outputNumber)) {
+                if (Math.floor(outputNumber) !== outputNumber) {
+                    if (outputNumber % 1 === 0) {
+                        finalOutput = Math.round(outputNumber).toString();
+                    } else {
+                        finalOutput = outputNumber.toString();
+                    }
+                } else {
+                    finalOutput = outputNumber.toString();
+                }
+            }
+    
+            const normalizedOutput = finalOutput.replace(/\r\n|\r/g, "\n").trim();
+            const normalizedExpectedOutput = expectedOutput.toString().replace(/\r\n|\r/g, "\n").trim();
+            const status = (normalizedOutput == normalizedExpectedOutput) ? "Accepted" : "Declined";
+            return { output: finalOutput, status: status };
+        } else {
+            return { error: data.error }
+        }
+      }   
 
       if (language === "python") {
-          compiler.compilePython(envData, code, function(data) { res.send(interpretOutput(data)) });
+          compiler.compilePython(envData, finalCode, function(data) { res.send(interpretOutput(data)) });
       } else if (language === "java") {
-          compiler.compileJava(envData, code, function(data) { res.send(interpretOutput(data)) });
+          compiler.compileJava(envData, finalCode, function(data) { res.send(interpretOutput(data)) });
       } else if (language === "csharp") {
-          compiler.compileCS(envData, code, function(data) { res.send(interpretOutput(data)) });
+          compiler.compileCS(envData, finalCode, function(data) { res.send(interpretOutput(data)) });
       } else if (language === "c") {
-          compiler.compileCPP(envData, code, function(data) { res.send(interpretOutput(data)) });
+          compiler.compileCPP(envData, finalCode, function(data) { res.send(interpretOutput(data)) });
       } else if (language === "visualbasic") {
-          compiler.compileVB(envData, code, function(data) { res.send(interpretOutput(data)) });
+          compiler.compileVB(envData, finalCode, function(data) { res.send(interpretOutput(data)) });
       } else {
           res.status(400).send('Unsupported programming language');
       }
