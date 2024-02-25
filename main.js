@@ -74,6 +74,9 @@ app.get("/minigames/menu", async (req, res) => {
     } catch (err) {
       console.log(err)
     }
+  } else {
+    res.redirect('/auth/login')
+    return
   }
 
   res.render(`minigames/Menu.html`, { currentPage: "menu", pagesession: null, user: user }, (err, html) => {
@@ -101,6 +104,9 @@ app.get("/minigames/menu/:menupage?", async (req, res) => {
     } catch (err) {
       console.log(err)
     }
+  } else {
+    res.redirect('/auth/login')
+    return
   }
 
   res.render(`minigames/${menupage}/menu-${menupage}.html`, { currentPage: "menu", pagesession: null, user: user }, (err, html) => {
@@ -124,6 +130,9 @@ app.get("/minigames/programming/codemaster/problems", async (req, res) => {
     } catch (err) {
       console.log(err)
     }
+  } else {
+    res.redirect('/auth/login')
+    return
   }
 
   let problems
@@ -166,6 +175,9 @@ app.get("/minigames/programming/codemaster/problem/:problem_id?", async (req, re
     } catch (err) {
       console.log(err)
     }
+  } else {
+    res.redirect('/auth/login')
+    return
   }
 
   try {

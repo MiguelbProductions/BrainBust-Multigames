@@ -67,23 +67,25 @@
                             <a href="/minigames/programming/codecherif" class="nav-item nav-link"><i class="fa-regular fa-bug mx-2"></i>Code Sheriff</a>
                             <a href="#" class="nav-item nav-link">Comming Soon...</a>
                         <% } else { %>
-                        <a href="/" class="nav-item nav-link">Home</a>
-                        <a href="/testimonial" class="nav-item nav-link">Testimonial</a>
-                        <a href="/contact" class="nav-item nav-link">Contact</a>
+                            <a href="/" class="nav-item nav-link">Home</a>
+                            <a href="/testimonial" class="nav-item nav-link">Testimonial</a>
+                            <a href="/contact" class="nav-item nav-link">Contact</a>
+                        <% } %>
                         <% if (!user) { %>
                             <a href="/auth/login" class="nav-item nav-link ms-4">Login</a>
                         <% } else { %>
                             <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                                <a href="#" class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
                                     <img src="<%= user.Image %>" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%; ">
                                     <%= user.Name %>
+                                    <i class="fa-solid fa-caret-down"></i>
                                 </a>
                                 <div class="dropdown-menu bg-light mt-2">
                                     <!-- <a href="#" class="dropdown-item">Configs</a> -->
                                     <a href="../auth/logout" class="dropdown-item logout">Log Out <i class="fa-solid fa-right-from-bracket ms-2"></i></a>
                                 </div>
                             </div>
-                        <% } } %>
+                        <% } %>
                     </div>
                 </div>
             </nav>
