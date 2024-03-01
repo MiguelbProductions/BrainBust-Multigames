@@ -120,6 +120,30 @@ h6,
     color: rgb(99, 164, 238) !important;
 }
 
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+    top: 100px;
+}
+
+.party-area {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.party-area span:nth-child(1) { color: red; }
+.party-area span:nth-child(2) { color: orange; }
+.party-area span:nth-child(3) { color: yellow; }
+.party-area span:nth-child(4) { color: #3ed13e; }
+.party-area span:nth-child(5) { color: rgb(207, 5, 207); }
+.party-area span:nth-child(7) { color: red; }
+.party-area span:nth-child(8) { color: orange; }
+.party-area span:nth-child(9) { color: yellow; }
+.party-area span:nth-child(10) { color: #3ed13e; }
+  
+  
 @media (max-width: 991.98px) {
     .navbar .navbar-nav {
         padding: 0 15px;

@@ -53,7 +53,7 @@
                 <a href=".." class="navbar-brand">
                     <div class="header-titles">
                         <h1 class="text-white d-inline-block">Brain<span class="text-dark">.</span>Burst</h1>
-                        <h2 class="text-white d-inline-block ms-3"><%= (pagesession && pagesession == "Programming") ? "DevZone" : "" %></h2>
+                        <h2 class="text-white d-inline-block ms-3"><%- (pagesession && pagesession == "Programming") ? "DevZone" : (pagesession && pagesession == "Party Games") ? "<div class='party-area'><span>P</span><span>a</span><span>r</span><span>t</span><span>y</span><span>&nbsp;</span><span>A</span><span>r</span><span>e</span><span>a</span></div>" : "" %></h2>
                     </div>
                 </a>
                 <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse"
@@ -65,6 +65,11 @@
                         <% if (pagesession && pagesession == "Programming") { %>
                             <a href="/minigames/programming/codemaster/problems" class="nav-item nav-link"><i class="fa-solid fa-code mx-2"></i>Code Master</a>
                             <a href="/minigames/programming/codecherif" class="nav-item nav-link"><i class="fa-regular fa-bug mx-2"></i>Code Sheriff</a>
+                            <a href="#" class="nav-item nav-link">Comming Soon...</a>
+                        <% } else if (pagesession && pagesession == "Party Games") { %>
+                            <a href="/minigames/party/sequentialboxes" class="nav-item nav-link">Sequential Boxes</a>
+                            <a href="/minigames/party/sudoku" class="nav-item nav-link">Sudoku</a>
+                            <a href="/minigames/party/wordle" class="nav-item nav-link">Wordle</a>
                             <a href="#" class="nav-item nav-link">Comming Soon...</a>
                         <% } else { %>
                             <a href="/" class="nav-item nav-link">Home</a>
@@ -81,8 +86,42 @@
                                     <i class="fa-solid fa-caret-down"></i>
                                 </a>
                                 <div class="dropdown-menu bg-light mt-2">
-                                    <!-- <a href="#" class="dropdown-item">Configs</a> -->
-                                    <a href="../auth/logout" class="dropdown-item logout">Log Out <i class="fa-solid fa-right-from-bracket ms-2"></i></a>
+                                    <li class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">Main</a>
+                                        <ul class="dropdown-menu mainmenu">
+                                            <li><a href="#" class="dropdown-item">Home</a></li>
+                                            <li><a href="#" class="dropdown-item">Testimonial</a></li>
+                                            <li><a href="#" class="dropdown-item">Contact</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">Minigames</a>
+                                        <ul class="dropdown-menu mainmenu">
+                                            <li class="dropdown-submenu">
+                                                <a class="dropdown-item dropdown-toggle" href="#">Dev Games</a>
+                                                <ul class="dropdown-menu mingames-menu">
+                                                    <li><a href="/minigames/programming/codemaster/problems" class="dropdown-item">Code Master</a></li>
+                                                    <li><a href="/minigames/programming/codecherif" class="dropdown-item">Code Sheriff</a></li>
+                                                    <li><a href="#" class="dropdown-item">Coming Soon...</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown-submenu">
+                                                <a class="dropdown-item dropdown-toggle" href="#">Party Games</a>
+                                                <ul class="dropdown-menu mingames-menu">
+                                                    <li><a href="#" class="dropdown-item">Sequential Boxes</a></li>
+                                                    <li><a href="#" class="dropdown-item">Sudoku</a></li>
+                                                    <li><a href="#" class="dropdown-item">Wordle</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown-submenu">
+                                                <a class="dropdown-item dropdown-toggle" href="#">Daily Games</a>
+                                                <ul class="dropdown-menu mingames-menu">
+                                                    <li><a href="#" class="dropdown-item">2048</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <a href="/auth/logout" class="dropdown-item logout">Log Out <i class="fa-solid fa-right-from-bracket ms-2"></i></a>
                                 </div>
                             </div>
                         <% } %>
@@ -92,7 +131,7 @@
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/public/externalpackages/jquery-3.7.1.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function(){
             var currentPage = "<%= currentPage %>".toLowerCase()

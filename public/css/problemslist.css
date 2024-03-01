@@ -47,3 +47,12 @@
     font-size: 0.8rem;
     color: #333;
 }
+
+.alert-success {
+    background-color: #bee0c2 !important;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+}

@@ -21,7 +21,8 @@
     "electron-packager": "^17.1.2"
   },
   "scripts": {
-    "start": "electron SetupApp",
+    "web": "nodemon --exec \"cls && node\" main.js",
+    "app": "electron SetupApp",
     "package": "electron-packager . BrainBurst --overwrite --platform=win32 --arch=x64 --out=release-builds"
   }
 

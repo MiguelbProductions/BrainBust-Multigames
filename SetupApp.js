@@ -13,11 +13,11 @@ function createWindow () {
     resizable: true,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
     }
   });
 
   mainWindow.maximize()
+  mainWindow.webContents.openDevTools()
 
   mainWindow.loadURL('http://localhost:7001/');
   mainWindow.on('closed', function () {
