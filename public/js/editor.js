@@ -74,7 +74,7 @@ $(document).ready(function () {
                     var statusClass = (response.status === "Accepted") ? "debug-title text-success" : "debug-title text-danger";
                     var statusText = (response.status === "Accepted") ? "Success" : "Failure";
 
-                    $("#actual-result").html("<span class='" + statusClass + "'>" + statusText + "</span><br>" + $("#expected-result").html() + "<br><br>Result<br><span class='code " + ((response.status === "Accepted") ? "CorrectBox" : "WrongBox") + "'>" + response.output + "</span>");
+                    $("#actual-result").html("<span class='" + statusClass + "'>" + statusText + "</span><span class='fw-bold ms-3'>Runtime: " + ((response.executionTime) ? response.executionTime : "") + "</span><br>" + $("#expected-result").html() + "<br><br>Result<br><span class='code " + ((response.status === "Accepted") ? "CorrectBox" : "WrongBox") + "'>" + response.output + "</span>");
                 }
             },
             error: function(xhr, status, error) {

@@ -61,5 +61,18 @@
         ]
     });
     
+    $('.dropdown-submenu > a').on("click", function(e) {
+        var submenu = $(this).next('.dropdown-menu');
+        var all_submenus = $(this).closest('.dropdown').find('.dropdown-menu .mingames-menu').not(submenu);
+    
+        all_submenus.hide();
+        submenu.toggle();
+    
+        e.stopPropagation();
+        e.preventDefault();
+    });
+    
+ 
+    $(".mainmenu").hide()
 })(jQuery);
 
